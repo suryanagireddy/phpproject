@@ -21,10 +21,19 @@
                     if(!$views_count_query){
                         die("Query Failed!" . mysqli_error($connection));
                     }
-                
-                    $query = "SELECT * FROM posts WHERE post_id = $the_post_id";
-                    $select_all_posts_query = mysqli_query($connection, $query);
                     
+                    if(isset($_SESSION['user_role']) && $_SESSION['user_role'] == 'Admin'){
+                       $query = "SELECT * FROM posts WHERE post_id = $the_post_id";  
+                    }
+                    else{
+                        $query = "SELECT * FROM posts WHERE post_id = $the_post_id AND post_status= 'published'";
+                    }
+                
+                    $select_all_posts_query = mysqli_query($connection, $query);
+                    if(mysqli_num_rows($select_all_posts_query) < 1){
+                      echo "<h1 class='text-center'>No Posts available</h1>";  
+                    }
+                    else{
                     while($row = mysqli_fetch_assoc( $select_all_posts_query)){
                         
                     $post_title   =  $row['post_title'];
@@ -55,17 +64,10 @@
                 <p><?php echo $post_content ?></p>
                 <hr>  
                                                       
-            <?php } 
-                
-                
-                }else{
-                    header("Location: index.php");
-                }
-                
-                ?>
+            <?php } ?>
             
             <!-- Comments Column -->
-            <!-- Blog Comments -->
+            <!-- Post Comments -->
                 
             <?php
 
@@ -76,26 +78,17 @@
                 $comment_author = $_POST['comment_author'];
                 $comment_email =  $_POST['comment_email'];
                 $comment_content =  $_POST['comment_content'];
-                //$comment_content = trim(str_replace("<p>& nbsp;</p>", "", $comment_content));
 
-
-                
                 if(!empty($comment_author) && !empty($comment_email) && !empty($comment_content) && ($comment_content != '')){
 
                 $query =  "INSERT INTO comments (comment_post_id, comment_author, comment_email, comment_content, comment_status, comment_date)";
                 $query .= "VALUES ($the_post_id, '{$comment_author}', '{$comment_email}', '{$comment_content}', 'Unapproved', now())  " ;
 
                 $create_comment_query = mysqli_query($connection, $query);
-               
-                //update comment count
-//                $query = "UPDATE posts SET post_comment_count = post_comment_count + 1 ";
-//                $query .= "WHERE post_id = $the_post_id ";
-//                $update_comment_count =  mysqli_query($connection, $query);
                     
                 echo "<div class='alert alert-success'> Your Comment is received and under review !</div>";
                 $message = "";
-                }else{
-                    //echo "<script>javascript: alert('Fields Cannot be empty');</script>"; 
+                }else{ 
                     $message = "Fields cannot be empty";
                 }
               }
@@ -151,12 +144,16 @@
                         <h4 class="media-heading"><?php echo $comment_author ?>
                             <small><?php echo $comment_date ?></small>
                         </h4>
-                        <?php echo $comment_author ?>
+                        <?php echo $comment_content ?>
                     </div>
                 </div>
                 
                 
-                <?php  } ?>
+                <?php  } } } 
+                else{
+                    header("Location: index.php");
+                }
+                ?>
 
                 
                 

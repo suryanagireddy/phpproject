@@ -39,7 +39,7 @@ if(isset($_POST['create_post'])){
     <input type="text" class="form-control" name="post_title">
 </div>
 <div class="form-group">
-<label for="post_category-id">Post Category</label><br>
+<label for="post_category-id">Post Category</label>
 <select name="post_category_id" id="">
 <?php
     $query = "SELECT * FROM categories";
@@ -52,13 +52,23 @@ if(isset($_POST['create_post'])){
 ?>
 </select>
 </div>
+
 <div class="form-group">
-    <label for="post-author">Post Author</label>
-    <input type="text" class="form-control" name="post_author">
+<label for="post-author">Post Author</label>
+<select name="post_author" id="">
+<?php
+    $query = "SELECT * FROM users";
+    $select_user = mysqli_query($connection, $query);
+    while($row = mysqli_fetch_assoc( $select_user)){   
+    $user_name  =  $row['user_name'];
+        echo "<option value='$user_name'>{$user_name}</option>";
+    }
+?>
+</select>
 </div>
 
 <div class="form-group">
-    <label for="post-status">Post Status</label><br>
+    <label for="post-status">Post Status</label>
     <select name="post_status" id="">
         <option value="draft">Select Options</option>
         <option value="published">Publish</option>

@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Sep 16, 2018 at 06:07 AM
+-- Generation Time: Sep 28, 2018 at 03:59 AM
 -- Server version: 10.1.34-MariaDB
 -- PHP Version: 7.0.31
 
@@ -38,10 +38,10 @@ CREATE TABLE `categories` (
 --
 
 INSERT INTO `categories` (`cat_id`, `cat_title`) VALUES
-(7, 'Surya'),
-(9, 'Mangoo'),
-(10, 'php'),
-(11, 'Flowers');
+(7, 'Technology'),
+(9, 'Sports'),
+(10, 'Food'),
+(11, 'News');
 
 -- --------------------------------------------------------
 
@@ -66,10 +66,9 @@ CREATE TABLE `comments` (
 INSERT INTO `comments` (`comment_id`, `comment_post_id`, `comment_author`, `comment_email`, `comment_content`, `comment_status`, `comment_date`) VALUES
 (2, 1, 'ioshgisjnd', 'sdfnsjdgn', 'jnsdgjsdng', 'Approved', '2018-09-08'),
 (5, 1, 'xcvybuihnun', 'erxcvy2vv@vvyh.gc', 'rtxctgvtest', 'Approved', '2018-09-08'),
-(13, 1, 'fcfg', 'rtcftcf@vghvh.coo', 'gvhvh ', 'Approved', '2018-09-09'),
 (14, 9, 'jfdbvgjdn', 'dvs@gmail.com', 'jdnjdsnfvjs', 'Approved', '2018-09-15'),
 (15, 9, 'ihifhis', 'shhh@gmail.com', 'fuhseudhf', 'Approved', '2018-09-15'),
-(16, 5, 'the', 'dsnjsdn@gmmail.com', 'dmkdsmfkerm', 'Unapproved', '2018-09-15'),
+(16, 5, 'the', 'dsnjsdn@gmmail.com', 'dmkdsmfkerm', 'Approved', '2018-09-15'),
 (17, 6, 'jbsdjb', 'jzbxdh@jndj.coo', 'sajfgbsdbjhdbs', 'Unapproved', '2018-09-15'),
 (18, 5, 'jbchbs', 'hbas@gmail.com', 'dbsdbchjsbc', 'Unapproved', '2018-09-15');
 
@@ -84,6 +83,7 @@ CREATE TABLE `posts` (
   `post_category_id` int(10) NOT NULL,
   `post_title` varchar(255) NOT NULL,
   `post_author` varchar(255) NOT NULL,
+  `post_user` varchar(255) NOT NULL,
   `post_date` date NOT NULL,
   `post_image` text NOT NULL,
   `post_content` text NOT NULL,
@@ -97,15 +97,16 @@ CREATE TABLE `posts` (
 -- Dumping data for table `posts`
 --
 
-INSERT INTO `posts` (`post_id`, `post_category_id`, `post_title`, `post_author`, `post_date`, `post_image`, `post_content`, `post_tags`, `post_comment_count`, `post_status`, `post_views_count`) VALUES
-(1, 7, 'First post', 'surya', '2018-09-14', '1 (8).jpg', '<p>learning phpppp ,,,, 55%</p>', 'surya, kanna', 3, 'published', 0),
-(5, 10, 'rvgbhnj', 'surya', '2018-09-15', '0TLWlV548575-02.jpg', '<p>xcfvgbhnj jgbhbm</p>', 'ecrvtgbhnj', 2, 'published', 0),
-(6, 11, 'jbsjf', 'kanna', '2018-09-15', '1 (7).jpg', '<p>awkfmksmf</p>', 'sefnjsdnf', 1, 'published', 0),
-(9, 9, 'heyyyy', 'kanna', '2018-09-15', '1 (37).jpg', '<p>dsngsdfjs</p>', 'jsdfn', 2, 'published', 0),
-(22, 9, 'heyyyy', 'kanna', '2018-09-15', '1 (37).jpg', '<p>dsngsdfjs</p>', 'jsdfn', 0, 'published', 0),
-(23, 11, 'jbsjf', 'kanna', '2018-09-15', '1 (7).jpg', '<p>awkfmksmf</p>', 'sefnjsdnf', 0, 'published', 0),
-(24, 10, 'rvgbhnj', 'surya', '2018-09-15', '0TLWlV548575-02.jpg', '<p>xcfvgbhnj jgbhbm</p>', 'ecrvtgbhnj', 0, 'published', 0),
-(25, 7, 'First post', 'surya', '2018-09-15', '1 (8).jpg', '<p>learning phpppp ,,,, 55%</p>', 'surya, kanna', 0, 'published', 1);
+INSERT INTO `posts` (`post_id`, `post_category_id`, `post_title`, `post_author`, `post_user`, `post_date`, `post_image`, `post_content`, `post_tags`, `post_comment_count`, `post_status`, `post_views_count`) VALUES
+(1, 7, 'First post', 'surya', '', '2018-09-14', '1 (8).jpg', '<p>learning phpppp ,,,, 55%</p>', 'surya, kanna', 3, 'published', 14),
+(5, 10, 'rvgbhnj', 'surya', '', '2018-09-15', '0TLWlV548575-02.jpg', '<p>xcfvgbhnj jgbhbm</p>', 'ecrvtgbhnj', 2, 'published', 0),
+(6, 11, 'jbsjf', 'kanna', '', '2018-09-15', '1 (7).jpg', '<p>awkfmksmf</p>', 'sefnjsdnf', 1, 'published', 0),
+(9, 9, 'heyyyy', 'kanna', '', '2018-09-15', '1 (37).jpg', '<p>dsngsdfjs</p>', 'jsdfn', 2, 'published', 0),
+(22, 9, 'heyyyy', 'kanna', '', '2018-09-15', '1 (37).jpg', '<p>dsngsdfjs</p>', 'jsdfn', 0, 'published', 0),
+(23, 11, 'jbsjf', 'shilpa', '', '2018-09-16', '1 (7).jpg', '<p>awkfmksmf</p>', 'sefnjsdnf', 0, 'published', 0),
+(24, 10, 'rvgbhnj', 'surya', '', '2018-09-15', '0TLWlV548575-02.jpg', '<p>xcfvgbhnj jgbhbm</p>', 'ecrvtgbhnj', 0, 'published', 0),
+(25, 7, 'First post', 'nagireddy', '', '2018-09-16', '1 (8).jpg', '<p>learning phpppp ,,,, 55%</p>', 'surya, kanna', 0, 'published', 1),
+(26, 10, 'sjshdfjsdbj', 'kanna', '', '2018-09-16', '(Fren)..jpg', '<p>sdknksnf</p>', 'sjdbjasbn', 0, 'published', 4);
 
 -- --------------------------------------------------------
 
@@ -131,12 +132,11 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`user_id`, `user_name`, `user_password`, `user_firstname`, `user_lastname`, `user_email`, `user_image`, `user_role`, `user_date`, `randSalt`) VALUES
-(1, 'surya', '$1$sP4.FT/.$kC6gU3YPYCijQg4LVN2yb0', 'Surya Rao', 'Nagireddy', 'surya@gmail.com', '1 (27).jpg', 'Admin', '2018-09-15', ''),
-(3, 'kanna', '$1$q6..rI/.$gyGjPQrZOHPeQNa/IGVM10', 'kanna', 'sdjfnsjdfn', 'dfjbnsjdfnjsnd@gmail.com', '1 (9).jpg', 'Subscriber', '2018-09-15', ''),
-(5, 'nagireddy', '$1$Ye5.B.4.$EFjeQCjmaDYfIF194yDZH/', 'nagireddy', 'n', 'nagireddy@gmail.com', '1 (2).jpg', 'Editor', '2018-09-15', ''),
-(9, 'jdbjsd', 'dfhbdhsb', '', '', 'dhgv@jnfhb.com', '', 'Subscriber', '2018-09-15', '$2y$10$iusesomecrazystrings22'),
-(10, 'demooo', '$1$5f4.oX2.$fNgsUDf6pjkhf4aCxhEpt0', '', '', 'demo@gmail.com', '', 'Subscriber', '2018-09-15', '$2y$10$iusesomecrazystrings22'),
-(11, 'demo', '$1$Ge2.Xl4.$k23fO9ckqr3vtbTHhOQ4j1', '', '', 'demooo@gmail.com', '', 'Subscriber', '2018-09-15', '$2y$10$iusesomecrazystrings22');
+(1, 'surya', '$2y$12$T4/hxqOybcRdZgm6m8iKQOJT.AJGqsLX74lSor7sosMAaY1/ZbCpa', 'Surya Rao', 'Nagireddy', 'surya@gmail.com', '1 (27).jpg', 'Admin', '2018-09-16', ''),
+(3, 'kanna', '$2y$12$Zl.pjCW4Gc/9eU6no4TVUu8aOECBYNrnhLx/RicgI.4mXWpNIJckK', 'kanna', 'S', 'kanna@gmail.com', '1 (9).jpg', 'Admin', '2018-09-16', ''),
+(5, 'nagireddy', '$2y$12$Qhkkxw/qNODqOzqi/6z5/uL2URqChym6OQc9eW6tA5cdkIBWEzzBC', 'Chinna', 'Nagireddy', 'nagireddy@gmail.com', '1 (2).jpg', 'Editor', '2018-09-16', ''),
+(14, 'vish', '$2y$12$NugkCJ95sLdW5WnK5BvGLuxOgSOu3iFf0w60WOi9M2Z1R5O1.9qk2', 'Vish', 'Awate', 'vish@gmail.com', 'asterix_10.jpg', 'Editor', '2018-09-16', '$2y$10$iusesomecrazystrings22'),
+(15, 'kalyani', '$2y$10$ZO.LpaSRbr3izrZj8Dq3delY7S91TkBsdIXJekb2VlpvL.Uae3lJK', 'Kalyani', 'Nagireddy', 'kalyani@gmail.com', '1 (35).jpg', 'Editor', '2018-09-16', '$2y$10$iusesomecrazystrings22');
 
 -- --------------------------------------------------------
 
@@ -156,7 +156,10 @@ CREATE TABLE `users_online` (
 
 INSERT INTO `users_online` (`id`, `session`, `time`) VALUES
 (1, '9drntuuesqku7s0ackcpv3sef0', 1537062635),
-(2, 'ri9bej6tqkthibf12i7s3b59o6', 1537022329);
+(2, 'ri9bej6tqkthibf12i7s3b59o6', 1537022329),
+(3, '55p3g5o2ujroa7amo1mb0g3b91', 1537083427),
+(4, 'cvef9krrldh608aik5l52a4jq4', 1537104233),
+(5, 'vh8mvijd1teobqingnn5v44tv4', 1537192568);
 
 --
 -- Indexes for dumped tables
@@ -212,19 +215,19 @@ ALTER TABLE `comments`
 -- AUTO_INCREMENT for table `posts`
 --
 ALTER TABLE `posts`
-  MODIFY `post_id` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=26;
+  MODIFY `post_id` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=27;
 
 --
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `user_id` int(5) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+  MODIFY `user_id` int(5) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
 
 --
 -- AUTO_INCREMENT for table `users_online`
 --
 ALTER TABLE `users_online`
-  MODIFY `id` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

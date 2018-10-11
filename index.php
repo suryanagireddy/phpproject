@@ -28,13 +28,29 @@
                     $page_1 = ($page * $per_page) - $per_page;
                 }
                 
-                $post_query_count = "SELECT * FROM posts";
+                if(isset($_SESSION['user_role']) && $_SESSION['user_role'] == 'Admin'){
+                       $post_query_count = "SELECT * FROM posts ";
+                    }
+                    else{
+                        $post_query_count = "SELECT * FROM posts WHERE post_status = 'published'";
+                    }
+                
                 $find_count = mysqli_query($connection, $post_query_count);
                 $posts_count = mysqli_num_rows($find_count);
                 
+                if ($posts_count < 1){
+                    echo "<h1 class='text-center'>No Posts available</h1>";
+                }
+                else{
                 $posts_pages = ceil($posts_count/$per_page);
                 
-                $query = "SELECT * FROM posts LIMIT $page_1 , $per_page";
+                    if(isset($_SESSION['user_role']) && $_SESSION['user_role'] == 'Admin'){
+                       $query = "SELECT * FROM posts LIMIT $page_1 , $per_page";
+                    }
+                    else{
+                        $query = "SELECT * FROM posts WHERE post_status = 'published' LIMIT $page_1 , $per_page";
+                    }
+                
                 $select_all_posts_query = mysqli_query($connection, $query);
                     
                     while($row = mysqli_fetch_assoc( $select_all_posts_query)){
@@ -45,8 +61,6 @@
                     $post_image   =  $row['post_image'];
                     $post_content = substr($row['post_content'],0,150) ;
                     $post_status = $row['post_status'];
-                        
-                        if($post_status == "published"){
                     
                ?>
                         
@@ -58,7 +72,6 @@
 -->
 
                 <!-- Blog Post -->
-                <h2><?php echo $posts_count; ?></h2>
                 <h2>
                     <a href="post.php?p_id=<?php echo $post_id; ?>"><?php echo $post_title ?></a>
                 </h2>

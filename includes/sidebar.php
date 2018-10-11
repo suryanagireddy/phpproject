@@ -14,11 +14,17 @@
         </form><!-- Search form -->
         <!-- /.input-group -->
     </div>
-  <?php
-     if(!isset($_SESSION['user_name'])){ 
-         ?>
+    
     <!-- login -->
     <div class="well">
+        
+        <?php if(isset($_SESSION['user_role'])): ?>
+        
+        <h4> Logged in as <?php echo $_SESSION['user_name']; ?></h4>
+        <a href="includes/logout.php" class="btn btn-primary">Logout</a>
+        
+        <?php else: ?>
+        
         <h4>Login</h4>
         <form action="includes/login.php" method="post">
         <div class="form-group">
@@ -29,8 +35,10 @@
         </div>
         <button class="btn btn-primary" name= "login" type="submit">Login</button>
         </form><!-- login form -->
+        
+        <?php endif; ?>
+        
     </div> 
-    <?php }  ?>
                            
 
     <!-- Blog Categories Well -->

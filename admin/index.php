@@ -29,16 +29,9 @@
                                         <i class="fa fa-file-text fa-5x"></i>
                                     </div>
                                     <div class="col-xs-9 text-right">
-                                    
-                                    <?php
-                                    $query = "SELECT * FROM posts";
-                                    $select_all_posts = mysqli_query($connection, $query);
-                                    $posts_count = mysqli_num_rows($select_all_posts);
-                                    
-                                    echo "<div class='huge'> {$posts_count}</div>"
-                                    ?>
-                                    
-                                  
+                                       <div class='huge'> 
+                                          <?php echo $posts_count = recordCount('posts'); ?>
+                                        </div>
                                         <div>Posts</div>
                                     </div>
                                 </div>
@@ -60,14 +53,9 @@
                                         <i class="fa fa-comments fa-5x"></i>
                                     </div>
                                     <div class="col-xs-9 text-right">
-                                    <?php
-                                    $query = "SELECT * FROM comments";
-                                    $select_all_comments = mysqli_query($connection, $query);
-                                    $comments_count = mysqli_num_rows($select_all_comments);
-                                    
-                                    echo "<div class='huge'>{$comments_count}</div>"
-                                    ?>
-                                     
+                                    <div class='huge'> 
+                                          <?php echo $comments_count = recordCount('comments'); ?>
+                                    </div>
                                       <div>Comments</div>
                                     </div>
                                 </div>
@@ -89,14 +77,9 @@
                                         <i class="fa fa-user fa-5x"></i>
                                     </div>
                                     <div class="col-xs-9 text-right">
-                                    <?php
-                                    $query = "SELECT * FROM users";
-                                    $select_all_users = mysqli_query($connection, $query);
-                                    $users_count = mysqli_num_rows($select_all_users);
-
-                                    echo "<div class='huge'>{$users_count}</div>"
-                                    ?>
-                                    
+                                        <div class='huge'> 
+                                          <?php echo $users_count = recordCount('users'); ?>
+                                        </div>
                                         <div> Users</div>
                                     </div>
                                 </div>
@@ -118,14 +101,9 @@
                                         <i class="fa fa-list fa-5x"></i>
                                     </div>
                                     <div class="col-xs-9 text-right">
-                                    <?php
-                                    $query = "SELECT * FROM categories";
-                                    $select_all_categories = mysqli_query($connection, $query);
-                                    $categories_count = mysqli_num_rows($select_all_categories);
-                                    
-                                    echo "<div class='huge'>{$categories_count}</div>"
-                                    ?>
-                                        
+                                        <div class='huge'> 
+                                          <?php echo $categories_count = recordCount('categories'); ?>
+                                        </div>
                                          <div>Categories</div>
                                     </div>
                                 </div>
@@ -143,21 +121,10 @@
                 <!-- /.row -->
                 <!-- /.chart -->
                 <?php
-                $query = "SELECT * FROM posts WHERE post_status = 'published'";
-                $select_all_publish_posts = mysqli_query($connection, $query);
-                $posts_publish_count = mysqli_num_rows($select_all_publish_posts);
-
-                $query = "SELECT * FROM posts WHERE post_status = 'draft'";
-                $select_all_draft_posts = mysqli_query($connection, $query);
-                $posts_draft_count = mysqli_num_rows($select_all_draft_posts);
-               
-                $query = "SELECT * FROM comments WHERE comment_status = 'Unapproved'";
-                $Unapproved_comments_query = mysqli_query($connection, $query);
-                $comments_unapproved_count = mysqli_num_rows($Unapproved_comments_query);
-
-                $query = "SELECT * FROM users WHERE user_role = 'Subscriber'";
-                $select_all_subscribers = mysqli_query($connection, $query);
-                $users_subscribers_count = mysqli_num_rows($select_all_subscribers);
+                $posts_publish_count = checkCount('posts', 'post_status', 'published');
+                $posts_draft_count = checkCount('posts', 'post_status', 'draft');
+                $comments_unapproved_count = checkCount('comments', 'comment_status', 'Unapproved');
+                $users_subscribers_count = checkCount('users', 'user_role', 'Subscriber');
 
                 ?>
                 
@@ -174,18 +141,16 @@
                                 $element_text = ['All Posts','Publish Posts' ,'Draft Posts', 'Comments', 'Unappoved comments', 'Users', 'Subscribers', 'Categories'];
                                 $element_count = [$posts_count, $posts_publish_count, $posts_draft_count, $comments_count ,$comments_unapproved_count, $users_count, $users_subscribers_count, $categories_count];
                             
-                            for($i =0; $i <8; $i++){
-                                
+                               for($i =0; $i <8; $i++){
                                 echo "['{$element_text[$i]}'" . "," . "{$element_count[$i]}]," ;
-                            }
-                                        
-                          ?>
-                          
+                                }           
+                            ?>
+                            
                         ]);
 
                         var options = {
                           chart: {
-                            title: 'Surya blog',
+                            title: 'Statistics',
                             subtitle: '',
                           }
                         };

@@ -20,16 +20,41 @@
                 while($row = mysqli_fetch_assoc( $select_all_categories_query))
                 {  
                 $category_id = $row['cat_id'];
-                $category_title  =  $row['cat_title'];   
-                echo "<li><a href ='category.php?category= $category_id'>{$category_title}</a></li>";      
+                $category_title  =  $row['cat_title']; 
+                    
+                $category_class= '';
+                $registration_class = '';
+                $contact_class = '';
+                
+                $page_name = basename($_SERVER['PHP_SELF']);
+                    
+                    if(isset($_GET['category']) && $_GET['category'] == $category_id)
+                    {
+                        $category_class = 'active';
+                    }
+                    else {
+                        
+                        switch($page_name){
+                        case 'registration.php';
+                        $registration_class = 'active';
+                        $contact_class = '';
+                        break;
+                        
+                        case 'contact.php';
+                        $registration_class = '';
+                        $contact_class = 'active';
+                        break;
+                        
+                        default:
+                        $registration_class = '';
+                        $contact_class = '';
+                                
+                        }
+                    }
+                echo "<li class='$category_class'><a href ='category.php?category= {$category_id}'>{$category_title}</a></li>";      
                 }
                 ?>
-                <li>
-                    <a href="admin">Admin</a>
-                </li>
-                <li>
-                    <a href="registration.php">Registration</a>
-                </li>
+
                <?php
                  if (session_status() === PHP_SESSION_NONE) session_start();
                  if(isset($_SESSION['user_name'])){
@@ -46,11 +71,9 @@
                 }
                 
                ?>
-<!--
-                <li>
-                    <a href="#">Contact</a>
+                <li class = '<?php echo $contact_class ?>'>
+                    <a href="contact.php">Contact us</a>
                 </li>
--->
                     
                     
             </ul>
