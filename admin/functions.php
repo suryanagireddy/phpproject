@@ -7,8 +7,44 @@ function query_error($result){
     }
 }
 
+function imagePlaceholder($image){
+    if(!$image){
+        return 'default.jpg';
+    }
+    else{
+        return $image;
+    }
+}
+
 function redirect($location){
     return header("Location:" .$location);
+    exit;
+}
+
+function ifItIsMethod($method=null){
+   
+    if($_SERVER['REQUEST_METHOD'] == strtoupper($method)){
+        return true;
+    }
+    return false;
+
+}
+
+function isLoggedIn(){
+    
+    if(isset($_SESSION['user_role'])){
+        return true;
+    }
+   return false;
+    
+}
+
+function checkIfUserIsLoggedInAndRedirect($redirectLocation=null){
+
+    if(isLoggedIn()){
+        redirect($redirectLocation);
+    }
+
 }
 
 function add_category(){ 
@@ -19,12 +55,16 @@ function add_category(){
           if(($cat_title) == "" || empty($cat_title)){
               echo "This field should not be empty";
           }else{
-              $query = "INSERT INTO categories(cat_title)";
-              $query .= "VALUE('{$cat_title}')";
-              $create_new_category_query = mysqli_query($connection,$query);
-              if(!$create_new_category_query){
-                  die('Creation failed' . mysqli_error($connection));
-              }
+              
+              $stmt = mysqli_prepare($connection, "INSERT INTO categories(cat_title) VALUES(?) ");
+             
+              mysqli_stmt_bind_param($stmt, 's', $cat_title);
+              
+              mysqli_stmt_execute($stmt);
+              query_error($stmt);
+              
+              //close db connection
+              mysqli_stmt_close($stmt);
           }
        }   
 }
@@ -197,8 +237,8 @@ function login_user($user_name, $user_password){
         $db_user_firstname  =  $row['user_firstname'];
         $db_user_lastname =  $row['user_lastname'];
         $db_user_email =  $row['user_email'];
-        $db_user_role = $row['user_role'];   
-     }
+        $db_user_role = $row['user_role'];
+     
      if(password_verify($user_password,$db_user_password)){
         if (session_status() === PHP_SESSION_NONE) session_start();
         $_SESSION['user_name'] = $db_user_name;
@@ -208,9 +248,11 @@ function login_user($user_name, $user_password){
         redirect("/cms/admin");
     }
     else{
-        redirect("/cms/index.php");
+        // redirect("/cms/index.php");
+        return false;
     }
-
+  }
+  return true;   
 }
 
 ?>

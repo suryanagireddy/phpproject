@@ -19,12 +19,15 @@
             // Update category
             if(isset($_POST['update_category'])){
             $new_cat_title = $_POST['cat_title'];
-            $query = "UPDATE categories SET cat_title = '{$new_cat_title}' WHERE cat_id = {$cat_id} ";
-            $update_category_query = mysqli_query($connection, $query);
-            query_error($update_category_query);
+                
+            $stmt = mysqli_prepare($connection, "UPDATE categories SET cat_title = ? WHERE cat_id = ? ");
+            mysqli_stmt_bind_param($stmt, 'si', $new_cat_title, $cat_id);
+            mysqli_stmt_execute($stmt);    
+            query_error($stmt);
+            mysqli_stmt_close($stmt);
             header("Location: categories.php");
             }
-           ?>
+        ?>
 
     </div>
     <div class="form-group">
