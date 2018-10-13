@@ -112,10 +112,19 @@ if(isset($_GET['u_id'])){
 <div class="form-group">
 <label for="user-role">User Role: <?php echo $user_role ?></label><br>
 <select name="user_role" id="">
-  <option value="<?php echo $user_role ?>">Select option</option>
-  <option value="Admin">Admin</option>
-  <option value="Editor">Editor</option>
-  <option value="Subscriber">Subscriber</option>
+<?php
+    $query = "SELECT * FROM user_roles";
+    $select_user_role = mysqli_query($connection, $query);
+    while($row = mysqli_fetch_assoc( $select_user_role)){   
+    $role_id  =  $row['role_id'];
+    $role_title  =  $row['role_title'];
+    if($role_title == $user_role){
+        echo "<option selected value='$role_title'>{$role_title}</option>";
+    }else{
+        echo "<option value='$role_title'>{$role_title}</option>";
+    }
+    }
+?>
 </select>
 </div>
 

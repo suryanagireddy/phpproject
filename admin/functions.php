@@ -47,26 +47,16 @@ function checkIfUserIsLoggedInAndRedirect($redirectLocation=null){
 
 }
 
-function add_category(){ 
+function add_category($cat_title){ 
      global $connection;
      // Add Category
-      if(isset($_POST['submit'])){
-        $cat_title =  $_POST['cat_title'];
-          if(($cat_title) == "" || empty($cat_title)){
-              echo "This field should not be empty";
-          }else{
-              
-              $stmt = mysqli_prepare($connection, "INSERT INTO categories(cat_title) VALUES(?) ");
-             
-              mysqli_stmt_bind_param($stmt, 's', $cat_title);
-              
-              mysqli_stmt_execute($stmt);
-              query_error($stmt);
-              
-              //close db connection
-              mysqli_stmt_close($stmt);
-          }
-       }   
+      $stmt = mysqli_prepare($connection, "INSERT INTO categories(cat_title) VALUES(?) ");
+      mysqli_stmt_bind_param($stmt, 's', $cat_title);
+      mysqli_stmt_execute($stmt);
+      query_error($stmt);
+
+      //close db connection
+      mysqli_stmt_close($stmt); 
 }
 
 function find_all_categories(){
@@ -87,15 +77,66 @@ function find_all_categories(){
        }
 }
 
-function delete_category(){
+function delete_category($delete_cat_id){
     global $connection;
     //Delete Category
-    if(isset($_GET['delete'])){
-    $delete_cat_id = $_GET['delete'];
     $query = "DELETE FROM categories WHERE cat_id = {$delete_cat_id}";
     $delete_category =mysqli_query($connection, $query);
     header("Location: categories.php");
+
+}
+
+function add_user_role($role_title){ 
+     global $connection;
+     // Add user role
+        $stmt = mysqli_prepare($connection, "INSERT INTO user_roles(role_title) VALUES(?) ");
+        mysqli_stmt_bind_param($stmt, 's', $role_title);
+        mysqli_stmt_execute($stmt);
+        query_error($stmt);
+    // close db connection
+        mysqli_stmt_close($stmt); 
+    
+    header("Location: user_roles.php");
+}
+
+function find_all_user_roles(){
+       global $connection;
+       //Find all user_roles
+       $query = "SELECT * FROM user_roles";
+       $select_user_roles = mysqli_query($connection, $query);
+       while($row = mysqli_fetch_assoc( $select_user_roles))
+       {   
+        $role_id  =  $row['role_id'];
+        $role_title  =  $row['role_title'];
+        echo "<tr>";
+        echo "<td>{$role_id}</td>"; 
+        echo "<td>{$role_title}</td>";
+        echo "<td><a href='user_roles.php?edit={$role_id}'>Edit</a></td>";
+        echo "<td><a href='user_roles.php?delete={$role_id}'>Delete</a></td>";
+        echo "</tr>";
+       }
+}
+
+function delete_user_role($delete_user_role_id){
+    global $connection;
+    //Delete user role
+    $query = "DELETE FROM user_roles WHERE role_id = {$delete_user_role_id}";
+    $delete_user_role =mysqli_query($connection, $query);
+    header("Location: user_roles.php");
+}
+
+// To check admin
+function check_admin(){
+    global $connection;
+    
+    $user_role = $_SESSION['user_role'];
+    if($user_role == 'Admin'){
+        return true;
     }
+    else {
+        return false;
+    }
+       
 }
 
 function users_online(){
@@ -245,7 +286,7 @@ function login_user($user_name, $user_password){
         $_SESSION['user_firstname'] = $db_user_firstname;
         $_SESSION['user_lastname'] = $db_user_lastname;
         $_SESSION['user_role'] = $db_user_role;
-        redirect("cms/admin");
+        redirect("/cms/admin");
     }
     else{
         // redirect("index.php");

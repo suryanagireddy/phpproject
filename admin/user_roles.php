@@ -1,13 +1,13 @@
 <?php include "includes/admin_header.php" ?>
-   
+
 <?php 
-//Add Category                          
+  // Add user role    
     if(isset($_POST['submit'])){
-        $cat_title = trim($_POST['cat_title']);
-        $error = ['cattitle'=>'']; 
+        $role_title = trim($_POST['role_title']);
+        $error = ['roletitle'=>'']; 
               
-               if($cat_title == ''){
-                $error['cattitle']= 'Category title cannot be empty';
+               if($role_title == ''){
+                $error['roletitle']= 'Role title cannot be empty';
                 }
 
                 foreach($error as $key =>$value){
@@ -19,21 +19,21 @@
   
                
                if(empty($error)){
-                  add_category($cat_title);
+                  add_user_role($role_title); 
                }
         
     }
 
                             
-//Delete category
+//Delete user role
      if(isset($_GET['delete'])){
-        $delete_cat_id = $_GET['delete'];                               
-        delete_category($delete_cat_id); 
+        $delete_user_role_id = $_GET['delete'];                               
+        delete_user_role($delete_user_role_id); 
      }
 
 ?>
-   
-    <div id="wrapper">
+    
+     <div id="wrapper">
       <!-- Navigation -->
       <?php include "includes/admin_navigation.php" ?>
         <div id="page-wrapper">
@@ -48,35 +48,35 @@
                         <div class="col-xs-6">
                             <form action="" method="post">
                                 <div class="form-group">
-                                   <label for="cat-title">Add New Category</label>
-                                    <input type="text" class= "form-control" name="cat_title">
-                                    <p style="color: red;"><?php echo isset($error['cattitle']) ? $error['cattitle'] : '' ?></p>
+                                   <label for="role-title">Add New User Role</label>
+                                    <input type="text" class= "form-control" name="role_title">
+                                    <p style="color: red;"><?php echo isset($error['roletitle']) ? $error['roletitle'] : '' ?></p>
                                 </div>
                                 <div class="form-group">
-                                    <input class = "btn btn-primary" type="submit" name="submit" value = "Add Category">
+                                    <input class = "btn btn-primary" type="submit" name="submit" value = "Add user role">
                                 </div>  
-                           </form>
-                           
-                           <!-- Edit Category -->
-                           <?php
-                            if(isset($_GET['edit'])){
-                                $cat_id = $_GET['edit'];
-                                include "includes/update_category.php";
-                            }
-                            ?>  
-                        </div><!-- Add Category form -->
+                           </form> 
+                            <?php
+                                //Edit User role
+                                if(isset($_GET['edit'])){
+                                $user_role_id = $_GET['edit'];
+                                include "includes/update_user_role.php";
+                                }
+                            ?>
+                        </div><!-- Add user role form -->
                         
                         <div class="col-xs-6">
                             <table class= "table table-bordered table-hover">
                                 <thead>
                                     <tr>
-                                        <th>Id</th>
-                                        <th>Category Name</th>
+                                        <th>Role Id</th>
+                                        <th>Role Title</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                     <!-- Find all categories-->
-                                       <?php find_all_categories(); ?>
+                                     <!-- Find all user_roles-->
+                                       <?php find_all_user_roles(); ?>
+                                     
                                 </tbody>
                             </table>
                         </div>

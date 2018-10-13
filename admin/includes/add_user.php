@@ -47,10 +47,15 @@ if(isset($_POST['create_user'])){
 <div class="form-group">
 <label for="user-role">User Role</label><br>
 <select name="user_role" id="">
-  <option value="Subscriber">Select option</option>
-  <option value="Admin">Admin</option>
-  <option value="Editor">Editor</option>
-  <option value="Subscriber">Subscriber</option>
+<?php
+    $query = "SELECT * FROM user_roles";
+    $select_user_role = mysqli_query($connection, $query);
+    while($row = mysqli_fetch_assoc( $select_user_role)){   
+    $role_id  =  $row['role_id'];
+    $role_title  =  $row['role_title'];
+        echo "<option value='$role_title'>{$role_title}</option>";
+    }
+?>
 </select>
 </div>
 

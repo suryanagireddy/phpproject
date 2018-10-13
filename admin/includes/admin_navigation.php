@@ -1,4 +1,5 @@
-<nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+<?php require_once 'functions.php'; ?>
+   <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
     <!-- Brand and toggle get grouped for better mobile display -->
     <div class="navbar-header">
         <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
@@ -54,17 +55,27 @@
             <li>
                 <a href="./categories.php"><i class="fa fa-fw fa-desktop"></i> Categories</a>
             </li>
-            <li>
-                <a href="javascript:;" data-toggle="collapse" data-target="#users_dropdown"><i class="fa fa-fw fa-arrows-v"></i> Users <i class="fa fa-fw fa-caret-down"></i></a>
-                <ul id="users_dropdown" class="collapse">
+            
+            <?php
+                 if (session_status() === PHP_SESSION_NONE) session_start();
+                 if(check_admin()):
+                     ?>
                     <li>
-                        <a href="users.php">View all Users</a>
+                    <a href="javascript:;" data-toggle="collapse" data-target="#users_dropdown"><i class="fa fa-fw fa-arrows-v"></i> Users <i class="fa fa-fw fa-caret-down"></i></a>
+                    <ul id="users_dropdown" class="collapse">
+                        <li>
+                            <a href="users.php">View all Users</a>
+                        </li>
+                        <li>
+                            <a href="users.php?source=add_user">Add User</a>
+                        </li>
+                        <li>
+                            <a href="user_roles.php">Add User Role</a>
+                        </li>
+                    </ul>
                     </li>
-                    <li>
-                        <a href="users.php?source=add_user">Add User</a>
-                    </li>
-                </ul>
-            </li>
+            <?php  endIf;  ?>
+            
             <li >
                 <a href="./comments.php"><i class="fa fa-fw fa-file"></i> Comments </a>
             </li>
