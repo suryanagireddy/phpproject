@@ -89,7 +89,7 @@ if(ifItIsMethod('post')){
                                             </div>
                                         </div>
                                         <?php if(isset($notRegister)):?>
-                                            <p> Email is not Registered </p>
+                                            <p style="color: red;"> Email is not Registered </p>
                                         <?php endIf; ?>
                                         <div class="form-group">
                                             <input name="recover-submit" class="btn btn-lg btn-primary btn-block" value="Reset Password" type="submit">

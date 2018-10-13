@@ -22,6 +22,11 @@
                 </li>
                 <li class="divider"></li>
                 <li>
+                   <a href="./changepassword.php"><i class="fa fa-fw fa-key"></i>Change password</a>
+                </li>
+                
+                <li class="divider"></li>
+                <li>
                     <a href="../includes/logout.php"><i class="fa fa-fw fa-power-off"></i> Log Out</a>
                 </li>
             </ul>
@@ -63,12 +68,23 @@
             <li >
                 <a href="./comments.php"><i class="fa fa-fw fa-file"></i> Comments </a>
             </li>
+            
             <li>
-                <a href="./profile.php"><i class="fa fa-fw fa-dashboard"></i> Profile </a>
+                <a href="javascript:;" data-toggle="collapse" data-target="#profile_dropdown"><i class="fa fa-fw fa-wrench"></i> Profile <i class="fa fa-fw fa-caret-down"></i></a>
+                <ul id="profile_dropdown" class="collapse">
+                    <li>
+                       <a href="./profile.php"> Edit Profile </a>
+                    </li>
+                    <li>
+                        <a href="./changepassword.php">Change password</a>
+                    </li>
+                </ul>
             </li>
+<!--
             <li>
                 <a href="bootstrap-grid.html"><i class="fa fa-fw fa-wrench"></i> Settings </a>
             </li>
+-->
         </ul>
     </div>
     <!-- /.navbar-collapse -->

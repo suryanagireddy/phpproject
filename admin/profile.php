@@ -11,7 +11,6 @@
             
         $user_id  =  $row['user_id'];
         $user_name  =  $row['user_name'];
-        $user_password =  $row['user_password'];
         $user_firstname  =  $row['user_firstname'];
         $user_lastname =  $row['user_lastname'];
         $user_email =  $row['user_email'];
@@ -20,11 +19,9 @@
         $user_date = $row['user_date'];
         }
         
-?>
-<?php  // Post request to update profile 
+     // Post request to update profile 
       if(isset($_POST['update_profile'])){
             $user_name  =  $_POST['user_name'];
-            $user_password =  $_POST['user_password'];
             $user_firstname  =  $_POST['user_firstname'];
             $user_lastname =  $_POST['user_lastname'];
             $user_email =  $_POST['user_email'];
@@ -34,48 +31,14 @@
             $user_image_temp = $_FILES['user_image']['tmp_name'];  
             move_uploaded_file($user_image_temp, "../images/$user_image");
 
-
-
-        if(empty($user_image)){
-            $query = "SELECT * FROM users WHERE user_id = $user_id";
-            $select_image = mysqli_query($connection,$query);
-            while($row = mysqli_fetch_array($select_image)){
-                $user_image = $row['user_image'];
+           if(empty($user_image)){
+                $query = "SELECT * FROM users WHERE user_id = $user_id";
+                $select_image = mysqli_query($connection,$query);
+                while($row = mysqli_fetch_array($select_image)){
+                    $user_image = $row['user_image'];
+                 }
             }
-        }
-       
-        if(!empty($user_password)) { 
-        //Encrypting the password
-        $query_password = "SELECT user_password FROM users WHERE user_id =  $user_id";
-        $get_user_query = mysqli_query($connection, $query_password);
-        query_error($get_user_query);
-
-        $row = mysqli_fetch_array($get_user_query);
-
-        $db_user_password = $row['user_password'];
-        
-        if($db_user_password != $user_password){
-            $hashed_password = password_hash($user_password, PASSWORD_BCRYPT, array('cost'=>12));
-        }
-        //Update query
-        $query = "UPDATE users SET ";
-        $query .="user_name = '{$user_name}',";
-        $query .="user_password = '{$hashed_password}',";
-        $query .="user_firstname = '{$user_firstname}',";
-        $query .="user_lastname = '{$user_lastname}',";
-        $query .="user_email = '{$user_email}',";
-        $query .="user_image = '{$user_image}',";
-        //$query .="user_role = '{$user_role}',";
-        $query .="user_date = now() ";
-        $query .="WHERE user_id = '{$user_id}' ";
-
-        $update_profile_query = mysqli_query($connection,$query);
-        query_error($update_profile_query);
-        //header("Location: profile.php");
-        echo "<p class ='bg-success'> Profile Updated <a href='users.php'>View all users</a></p>";
-        } // if password empty check end 
-        else{
-        //Update query if password field is empty
+    
         $query = "UPDATE users SET ";
         $query .="user_name = '{$user_name}',";
         //$query .="user_password = '{$hashed_password}',";
@@ -89,9 +52,11 @@
         $update_profile_query = mysqli_query($connection,$query);
         query_error($update_profile_query);
         //header("Location: profile.php");
-        echo "<p class ='bg-success'> Profile Updated <a href='users.php'>View all users</a></p>";
-        }
+        $updated = true;  
     }// Post request to update profile end
+  }
+else {
+    redirect("../index.php");
 }
 ?>
     <div id="wrapper">
@@ -106,9 +71,9 @@
                             <?php echo $_SESSION['user_name'] ?>
                             <small>Profile</small>
                         </h1>
-                    
-
-
+                        <?php if(isset($updated)):?>
+                           <p class ='bg-success'> Profile updated <a href='index.php'>Go to Dashboard</a></p>
+                        <?php endIf; ?>
                     <form action="" method="post" enctype="multipart/form-data">
                     <div class="form-group">
                         <label for="user-firstname">First Name</label>
@@ -141,14 +106,10 @@
                         <label for="user-name">Username</label>
                         <input value="<?php echo $user_name ?>" type="text" class="form-control" name="user_name">
                     </div>
+                    
                     <div class="form-group">
                         <label for="user-email">Email</label>
                         <input value="<?php echo $user_email ?>" type="email" class="form-control" name="user_email">
-                    </div>
-
-                    <div class="form-group">
-                        <label for="user-password">Password</label>
-                        <input  autocomplete="off" type="password" class="form-control" name="user_password">
                     </div>
 
                     <div class="form-group">

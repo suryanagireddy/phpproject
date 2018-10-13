@@ -70,21 +70,21 @@ if($_SERVER['REQUEST_METHOD']=="POST"){
                             <label for="user-name" class="sr-only">Username</label>
                             <input type="text" name="user_name" id="username" class="form-control" placeholder="Enter Desired Username" autocomplete="on" value = "<?php echo isset($user_name) ? $user_name : '' ?>">
                             
-                            <p><?php echo isset($error['username']) ? $error['username'] : '' ?></p>
+                            <p style="color: red;"><?php echo isset($error['username']) ? $error['username'] : '' ?></p>
                             
                         </div>
                          <div class="form-group">
                             <label for="email" class="sr-only">Email</label>
                             <input type="email" name="user_email" id="email" class="form-control" placeholder="Enter email" autocomplete="on" value = "<?php echo isset($user_email) ? $user_email : '' ?>">
                             
-                            <p><?php echo isset($error['email']) ? $error['email'] : '' ?></p>
+                            <p style="color: red;"><?php echo isset($error['email']) ? $error['email'] : '' ?></p>
                             
                         </div>
                          <div class="form-group">
                             <label for="password" class="sr-only">Password</label>
                             <input type="password" name="user_password" id="key" class="form-control" placeholder="Password">
                             
-                            <p><?php echo isset($error['password']) ? $error['password'] : '' ?></p>
+                            <p style="color: red;"><?php echo isset($error['password']) ? $error['password'] : '' ?></p>
                             
                         </div>
                 

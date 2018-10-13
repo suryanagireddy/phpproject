@@ -86,7 +86,7 @@
                                             <span class="input-group-addon"><i class="glyphicon glyphicon-user color-blue"></i></span>
                                             <input id="password" name="password" placeholder="Enter password" class="form-control"  type="password">
                                         </div>
-                                        <p><?php echo isset($error['password']) ? $error['password'] : '' ?></p>
+                                        <p style="color: red;"><?php echo isset($error['password']) ? $error['password'] : '' ?></p>
                                     </div>
 
                                     <div class="form-group">
@@ -94,7 +94,7 @@
                                             <span class="input-group-addon"><i class="glyphicon glyphicon-ok color-blue"></i></span>
                                             <input id="confirmPassword" name="confirmPassword" placeholder="Confirm password" class="form-control"  type="password">
                                         </div>
-                                        <p><?php echo isset($error['confirmPassword']) ? $error['confirmPassword'] : '' ?></p>
+                                        <p style="color: red;"><?php echo isset($error['confirmPassword']) ? $error['confirmPassword'] : '' ?></p>
                                     </div>
 
                                     <div class="form-group">

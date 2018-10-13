@@ -230,7 +230,7 @@ function login_user($user_name, $user_password){
     $select_user_query = mysqli_query($connection, $query);
     query_error($select_user_query);
     
- while($row = mysqli_fetch_array($select_user_query)){
+    while($row = mysqli_fetch_array($select_user_query)){
         $db_user_id = $row['user_id'];
         $db_user_name = $row['user_name'];
         $db_user_password =  $row['user_password'];
@@ -245,14 +245,14 @@ function login_user($user_name, $user_password){
         $_SESSION['user_firstname'] = $db_user_firstname;
         $_SESSION['user_lastname'] = $db_user_lastname;
         $_SESSION['user_role'] = $db_user_role;
-        redirect("/cms/admin");
+        redirect("cms/admin");
     }
     else{
-        // redirect("/cms/index.php");
+        // redirect("index.php");
         return false;
     }
   }
-  return true;   
+  return false;   
 }
 
 ?>
