@@ -45,10 +45,10 @@
                 $posts_pages = ceil($posts_count/$per_page);
                 
                     if(isset($_SESSION['user_role']) && $_SESSION['user_role'] == 'Admin'){
-                       $query = "SELECT * FROM posts LIMIT $page_1 , $per_page";
+                       $query = "SELECT * FROM posts ORDER BY post_id DESC LIMIT $page_1 , $per_page";
                     }
                     else{
-                        $query = "SELECT * FROM posts WHERE post_status = 'published' LIMIT $page_1 , $per_page";
+                        $query = "SELECT * FROM posts WHERE post_status = 'published' ORDER BY post_id DESC LIMIT $page_1 , $per_page";
                     }
                 
                 $select_all_posts_query = mysqli_query($connection, $query);
