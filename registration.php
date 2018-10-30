@@ -3,6 +3,19 @@
 
 <?php
 
+require 'vendor/autoload.php';
+
+$dotenv = new \Dotenv\Dotenv(__DIR__);
+$dotenv->load();
+
+$options = array(
+    'cluster' => 'ap1',
+    'encrypted' => true
+);
+
+$pusher = new Pusher\Pusher(getenv('APP_KEY'), getenv('APP_SECRET'), getenv('APP_ID'), $options);
+
+
 if($_SERVER['REQUEST_METHOD']=="POST"){
     $user_name = trim($_POST['user_name']);
     $user_email = trim($_POST['user_email']);
@@ -27,7 +40,7 @@ if($_SERVER['REQUEST_METHOD']=="POST"){
          $error['email']= 'Email cannot be empty';
      }
      if(useremail_exists($user_email)){
-         $error['email']= 'Email already exists, <a href="index.php>Please login</a>"';
+         $error['email']= 'Email already exists, <a href="login.php">Click here to login</a>';
      }
     if(strlen($user_password)<5){
          $error['password']= 'Password is too short';
@@ -45,7 +58,12 @@ if($_SERVER['REQUEST_METHOD']=="POST"){
   
     if(empty($error)){
         register_user($user_name, $user_email, $user_password);
-        login_user($user_name, $user_password);  
+
+        $data['message'] = $user_name;
+
+        $pusher->trigger('notifications', 'new_user', $data);
+
+        login_user($user_name, $user_password);
     }
     
 }
