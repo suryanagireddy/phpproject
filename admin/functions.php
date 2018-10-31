@@ -7,7 +7,14 @@ function query_error($result){
     }
 }
 
-function imagePlaceholder($image){
+
+function query($query){
+    global $connection;
+    return mysqli_query($connection, $query);
+}
+
+
+function imagePlaceholder($image=''){
     if(!$image){
         return 'default.jpg';
     }
@@ -22,21 +29,64 @@ function redirect($location){
 }
 
 function ifItIsMethod($method=null){
-   
     if($_SERVER['REQUEST_METHOD'] == strtoupper($method)){
         return true;
+    }
+    return false;
+}
+
+function isLoggedIn(){
+    if(isset($_SESSION['user_role'])){
+        return true;
+    }
+   return false; 
+}
+
+function loggedInUserId(){
+    if(isLoggedIn()){
+        $result = query("SELECT * FROM users WHERE user_name='" . $_SESSION['user_name'] ."'");
+        query_error($result);
+        $user = mysqli_fetch_array($result);
+        return mysqli_num_rows($result) >= 1 ? $user['user_id'] : false;
     }
     return false;
 
 }
 
-function isLoggedIn(){
-    
-    if(isset($_SESSION['user_role'])){
-        return true;
+function userLikedThisPost($post_id){
+    $result = query("SELECT * FROM likes WHERE user_id=" .loggedInUserId() . " AND post_id={$post_id}");
+    query_error($result);
+    return mysqli_num_rows($result) >= 1 ? true : false;
+}
+
+
+function getPostlikes($post_id){
+    $result = query("SELECT * FROM likes WHERE post_id=$post_id");
+    query_error($result);
+    echo mysqli_num_rows($result);
+
+}
+
+function escape($string) {
+   global $connection;
+   return mysqli_real_escape_string($connection, trim($string));
+}
+
+function set_message($msg){
+  if(!$msg){
+           $_SESSION['message']= $msg;
+           } 
+   else{
+        $msg = "";
     }
-   return false;
-    
+}
+
+
+function display_message() {
+    if(isset($_SESSION['message'])) {
+        echo $_SESSION['message'];
+        unset($_SESSION['message']);
+    }
 }
 
 function checkIfUserIsLoggedInAndRedirect($redirectLocation=null){
