@@ -38,9 +38,19 @@
     <!-- Sidebar Menu Items - These collapse to the responsive navigation menu on small screens -->
     <div class="collapse navbar-collapse navbar-ex1-collapse">
         <ul class="nav navbar-nav side-nav">
-            <li>
-                <a href="index.php"><i class="fa fa-fw fa-dashboard"></i> Dashboard</a>
+           <li>
+                <a href="index.php"><i class="fa fa-fw fa-dashboard"></i> My Dashboard</a>
             </li>
+        
+            <?php
+                 if (session_status() === PHP_SESSION_NONE) session_start();
+                 if(check_admin()):
+             ?>
+                    <li>
+                        <a href="dashboard.php"><i class="fa fa-fw fa-dashboard"></i> Admin Dashboard</a>
+                    </li>
+            <?php  endIf;  ?>    
+                    
             <li>
                 <a href="javascript:;" data-toggle="collapse" data-target="#posts_dropdown"><i class="fa fa-fw fa-arrows-v"></i> Posts <i class="fa fa-fw fa-caret-down"></i></a>
                 <ul id="posts_dropdown" class="collapse">

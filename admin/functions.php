@@ -1,5 +1,24 @@
 <?php
 
+//===== DATABASE HELPER FUNCTIONS =====//
+
+function stmtConnection(){
+    global $connection;
+    return mysqli_stmt_init($connection);
+}
+
+function redirect($location){
+    header("Location:" . $location);
+    exit;
+}
+
+function query($query){
+    global $connection;
+    $result = mysqli_query($connection, $query);
+    query_error($result);
+    return $result;
+}
+
 function query_error($result){
     global $connection;
     if(!$result){
@@ -7,32 +26,53 @@ function query_error($result){
     }
 }
 
+function fetchRecords($result){
+    return mysqli_fetch_array($result);
+}
 
-function query($query){
+function count_records($result){
+    return mysqli_num_rows($result);
+}
+
+//===== END DATABASE HELPERS =====//
+
+//===== AUTHENTICATION HELPERS =====//
+
+function check_admin(){
+    if(isLoggedIn()){
+        $result = query("SELECT user_role FROM users WHERE user_id=".$_SESSION['user_id']."");
+        $row = fetchRecords($result);
+        if($row['user_role'] == 'Admin'){
+            return true;
+        }else {
+            return false;
+        }
+    }
+    return false;    
+}
+
+function is_admin($user_name){
     global $connection;
-    return mysqli_query($connection, $query);
-}
-
-
-function imagePlaceholder($image=''){
-    if(!$image){
-        return 'default.jpg';
-    }
-    else{
-        return $image;
-    }
-}
-
-function redirect($location){
-    return header("Location:" .$location);
-    exit;
-}
-
-function ifItIsMethod($method=null){
-    if($_SERVER['REQUEST_METHOD'] == strtoupper($method)){
+    
+    $query = "SELECT user_role FROM users WHERE user_name = '$user_name'";
+    $user_query = mysqli_query($connection, $query);
+    
+    $row = mysqli_fetch_array($user_query);
+    
+    if($row['user_role'] == 'Admin'){
         return true;
     }
-    return false;
+    else {
+        return false;
+    }     
+}
+
+//===== END AUTHENTICATION HELPERS =====//
+
+//===== USER HELPERS =====//
+
+function get_user_name(){
+    return isset($_SESSION['user_name']) ? $_SESSION['user_name'] : null;
 }
 
 function isLoggedIn(){
@@ -50,15 +90,92 @@ function loggedInUserId(){
         return mysqli_num_rows($result) >= 1 ? $user['user_id'] : false;
     }
     return false;
-
 }
+
+function checkIfUserIsLoggedInAndRedirect($redirectLocation=null){
+    if(isLoggedIn()){
+        redirect($redirectLocation);
+    }
+}
+
+//===== END USER HELPERS =====//
+
+//===== GENERAL HELPERS =====//
+
+function imagePlaceholder($image=''){
+    if(!$image){
+        return 'default.jpg';
+    }
+    else{
+        return $image;
+    }
+}
+
+function escape($string) {
+   global $connection;
+   return mysqli_real_escape_string($connection, trim($string));
+}
+
+function ifItIsMethod($method=null){
+    if($_SERVER['REQUEST_METHOD'] == strtoupper($method)){
+        return true;
+    }
+    return false;
+}
+
+//===== END GENERAL HELPERS =====//
+
+//===== USER SPECIFIC HELPERS=====//
+
+function is_the_logged_in_user_owner($post_id){
+    $result = query("SELECT user_id FROM posts WHERE post_id={$post_id} AND user_id=".loggedInUserId()."");
+    return count_records($result) >= 1 ? true : false;
+}
+
+function get_all_user_posts(){
+    $post_author= get_user_name();
+    return query("SELECT * FROM posts WHERE post_author= '$post_author' ");
+    //return query("SELECT * FROM posts WHERE post_author= " .get_user_name(). "");
+}
+
+function get_all_posts_user_comments(){
+    $post_author= get_user_name();
+    return query("SELECT * FROM posts INNER JOIN comments ON posts.post_id = comments.comment_post_id WHERE post_author= '$post_author'");
+}
+
+function get_all_user_categories(){
+    return query("SELECT * FROM categories WHERE user_id=".loggedInUserId()."");
+}
+
+function get_all_user_published_posts(){
+    $post_author= get_user_name();
+    return query("SELECT * FROM posts WHERE post_author= '$post_author' AND post_status='published'");
+}
+
+function get_all_user_draft_posts(){
+    $post_author= get_user_name();
+    return query("SELECT * FROM posts WHERE post_author= '$post_author' AND post_status='draft'");
+}
+
+function get_all_user_approved_posts_comments(){
+    $post_author= get_user_name();
+    return query("SELECT * FROM posts INNER JOIN comments ON posts.post_id = comments.comment_post_id WHERE post_author= '$post_author' AND comment_status='Approved'");
+}
+
+function get_all_user_unapproved_posts_comments(){
+    $post_author= get_user_name();
+    return query("SELECT * FROM posts INNER JOIN comments ON posts.post_id = comments.comment_post_id WHERE post_author= '$post_author' AND comment_status='Unapproved'");
+}
+
+//===== END USER SPECIFIC HELPERS=====//
+
+//===== POST LIKE HELPERS =====//
 
 function userLikedThisPost($post_id){
     $result = query("SELECT * FROM likes WHERE user_id=" .loggedInUserId() . " AND post_id={$post_id}");
     query_error($result);
     return mysqli_num_rows($result) >= 1 ? true : false;
 }
-
 
 function getPostlikes($post_id){
     $result = query("SELECT * FROM likes WHERE post_id=$post_id");
@@ -67,10 +184,7 @@ function getPostlikes($post_id){
 
 }
 
-function escape($string) {
-   global $connection;
-   return mysqli_real_escape_string($connection, trim($string));
-}
+//===== END POST LIKE HELPERS =====//
 
 function set_message($msg){
   if(!$msg){
@@ -89,19 +203,14 @@ function display_message() {
     }
 }
 
-function checkIfUserIsLoggedInAndRedirect($redirectLocation=null){
-
-    if(isLoggedIn()){
-        redirect($redirectLocation);
-    }
-
-}
+//===== CATEGORY ONLINE HELPERS =====//
 
 function add_category($cat_title){ 
      global $connection;
      // Add Category
-      $stmt = mysqli_prepare($connection, "INSERT INTO categories(cat_title) VALUES(?) ");
-      mysqli_stmt_bind_param($stmt, 's', $cat_title);
+      $user_id = loggedInUserId();
+      $stmt = mysqli_prepare($connection, "INSERT INTO categories(cat_title,user_id) VALUES(?,?) ");
+      mysqli_stmt_bind_param($stmt, 'si', $cat_title, $user_id);
       mysqli_stmt_execute($stmt);
       query_error($stmt);
 
@@ -135,6 +244,10 @@ function delete_category($delete_cat_id){
     header("Location: categories.php");
 
 }
+
+//===== END CARTEGORY HELPERS =====//
+
+//===== USER ROLE HELPERS =====//
 
 function add_user_role($role_title){ 
      global $connection;
@@ -175,52 +288,42 @@ function delete_user_role($delete_user_role_id){
     header("Location: user_roles.php");
 }
 
-// To check admin
-function check_admin(){
-    global $connection;
-    
-    $user_role = $_SESSION['user_role'];
-    if($user_role == 'Admin'){
-        return true;
-    }
-    else {
-        return false;
-    }
-       
-}
+//===== END USER ROLE HELPERS =====//
 
-function users_online(){
-     //users online query 
+//===== USERS ONLINE HELPERS =====//
+
+function users_online(){ 
     if(isset($_GET['onlineusers'])){
+      global $connection;
+        if(!$connection){
+            session_start();
+            include("../includes/db.php");
+            $session = session_id();
 
-    global $connection;
-        
-    if(!$connection){
-        session_start();
-        include("../includes/db.php");
-        $session = session_id();
-        
-        $time = time();
-        $time_out_in_seconds = 30;
-        $time_out  = $time - $time_out_in_seconds;
+            $time = time();
+            $time_out_in_seconds = 30;
+            $time_out  = $time - $time_out_in_seconds;
 
-        $query = "SELECT * FROM users_online WHERE session = '$session'";
-        $send_query = mysqli_query($connection, $query);
-        $count = mysqli_num_rows($send_query);
+            $query = "SELECT * FROM users_online WHERE session = '$session'";
+            $send_query = mysqli_query($connection, $query);
+            $count = mysqli_num_rows($send_query);
 
-        if($count == NULL){
-        mysqli_query($connection, "INSERT INTO users_online(session, time) VALUES('$session', '$time')");
-        }else{
-         mysqli_query($connection, "UPDATE users_online SET time ='$time' WHERE session = '$session'"); 
-        }
+            if($count == NULL){
+            mysqli_query($connection, "INSERT INTO users_online(session, time) VALUES('$session', '$time')");
+            }else{
+             mysqli_query($connection, "UPDATE users_online SET time ='$time' WHERE session = '$session'"); 
+            }
 
-        $users_online_query =  mysqli_query($connection, "SELECT * FROM users_online WHERE time > '$time_out'"); 
-        echo $users_online_count = mysqli_num_rows($users_online_query);   
+            $users_online_query =  mysqli_query($connection, "SELECT * FROM users_online WHERE time > '$time_out'"); 
+            echo $users_online_count = mysqli_num_rows($users_online_query);   
         }
     }//get request isset()     
 }
 users_online();
 
+//===== END USERS ONLINE HELPERS =====//
+
+//===== DASHBOARD COUNT HELPERS =====//
 
 function recordCount($table){
     global $connection;
@@ -244,24 +347,10 @@ function checkCount($table, $column, $status){
     
 }
 
+//===== END DASHBOARD COUNT HELPERS =====//
 
-function is_admin($user_name){
-    global $connection;
-    
-    $query = "SELECT user_role FROM users WHERE user_name = '$user_name'";
-    $user_query = mysqli_query($connection, $query);
-    
-    $row = mysqli_fetch_array($user_query);
-    
-    if($row['user_role'] == 'Admin'){
-        return true;
-    }
-    else {
-        return false;
-    }
-       
-}
-//TO check user_name
+// TO check user_name exists
+
 function username_exists($user_name){
     global $connection;
     
@@ -277,7 +366,7 @@ function username_exists($user_name){
 }
 
 
-//TO check user_email
+// TO check user_email exists
 function useremail_exists($user_email){
     global $connection;
     
@@ -292,7 +381,7 @@ function useremail_exists($user_email){
     }    
 }
 
-//register user
+// Register user
 function register_user($user_name, $user_email, $user_password){
     
     global $connection;
@@ -309,6 +398,9 @@ function register_user($user_name, $user_email, $user_password){
     query_error($register_user_query);   
     
 }
+
+
+// Login the user
 
 function login_user($user_name, $user_password){
     
@@ -332,6 +424,7 @@ function login_user($user_name, $user_password){
      
      if(password_verify($user_password,$db_user_password)){
         if (session_status() === PHP_SESSION_NONE) session_start();
+        $_SESSION['user_id'] = $db_user_id;
         $_SESSION['user_name'] = $db_user_name;
         $_SESSION['user_firstname'] = $db_user_firstname;
         $_SESSION['user_lastname'] = $db_user_lastname;
@@ -339,7 +432,6 @@ function login_user($user_name, $user_password){
         redirect("/cms/admin");
     }
     else{
-        // redirect("index.php");
         return false;
     }
   }

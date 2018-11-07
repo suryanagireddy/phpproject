@@ -3,6 +3,12 @@ if(isset($_POST['create_post'])){
     $post_title = $_POST['post_title'];
     $post_category_id = $_POST['post_category_id'];
     $post_author = $_POST['post_author'];
+    
+        $result = query("SELECT * FROM users WHERE user_name='$post_author'");
+        query_error($result);
+        $user = mysqli_fetch_array($result);
+        $post_user_id = $user['user_id'];
+    
     $post_status = $_POST['post_status'];
     
     $post_image = $_FILES['post_image']['name'];
@@ -14,8 +20,8 @@ if(isset($_POST['create_post'])){
     
     move_uploaded_file($post_image_temp, "../images/$post_image");
     
-    $query = "INSERT INTO posts(post_category_id, post_title, post_author, post_date, post_image, post_content, post_tags, post_status)";
-    $query .= "VALUES ({$post_category_id}, '{$post_title}', '{$post_author}',now(), '{$post_image}', '{$post_content}', '{$post_tags}', '{$post_status}')  ";
+    $query = "INSERT INTO posts(post_category_id, post_title, post_author, post_user_id, post_date, post_image, post_content, post_tags, post_status)";
+    $query .= "VALUES ({$post_category_id}, '{$post_title}', '{$post_author}','$post_user_id', now(), '{$post_image}', '{$post_content}', '{$post_tags}', '{$post_status}')  ";
     
     $new_post_query = mysqli_query($connection, $query);
     
@@ -23,10 +29,7 @@ if(isset($_POST['create_post'])){
     
     $the_post_id = mysqli_insert_id($connection);
     
-    echo "<p class ='bg-success'> Post Created <a href='../post.php?p_id={$the_post_id}'>View Post</a> or <a href='posts.php'>View all posts</a></p>";
-    //header("Location: posts.php");
-
-    
+    echo "<p class ='bg-success'> Post Created <a href='../post.php?p_id={$the_post_id}'>View Post</a> or <a href='posts.php'>View all posts</a></p>"; 
 }
 
 ?>
