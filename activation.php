@@ -1,52 +1,37 @@
 <?php  include "includes/db.php"; ?>
 <?php  include "includes/header.php"; ?>
 
+
 <?php
-       checkIfUserIsLoggedInAndRedirect('/admin');
-       if(ifItIsMethod('post')){
-           if(isset($_POST['user_name']) && isset($_POST['user_password'])){
-              $user_name = trim($_POST['user_name']);
-              $user_password = trim($_POST['user_password']);
-              $user_name = mysqli_real_escape_string($connection, $user_name);
-              $user_password = mysqli_real_escape_string($connection, $user_password);
-               
-               $error = ['username'=>'', 'password' =>'', 'active' =>'']; 
-              
-               if($user_name == ''){
-                $error['username']= 'Username cannot be empty';
-                }
-               
-               if($user_name != ''){
-               if(!username_exists($user_name)){
-                 $error['username']= 'User Name doesnot exists';
-                 }
-               }
-            
-               if($user_password ==''){
-                 $error['password']= 'Password cannot be empty';
-                }
-               
-               if(!check_active($user_name)){
-                 $error['active'] = 'Account not activated, please check your mail for activation link';  
-               }
+    if(!isset($_GET['email']) && !isset($_GET['token'])){
+        redirect('index.php');
+    }
+    if($stmt = mysqli_prepare($connection, 'SELECT user_name, user_email, status FROM users WHERE status=?')){
+        mysqli_stmt_bind_param($stmt, "s", $_GET['status']);
+        mysqli_stmt_execute($stmt);
+        mysqli_stmt_bind_result($stmt, $user_name, $user_email, $status);
+        mysqli_stmt_fetch($stmt);
+        mysqli_stmt_close($stmt);
+    }
 
-                foreach($error as $key =>$value){
-                    if(empty($value)){
-                        unset($error[$key]);
 
-                    }
-                }//foreach end
-  
-               
-               if(empty($error)){
-                   login_user($user_name, $user_password);
-                   
-                   if(login_user($user_name, $user_password) === false){
-                       $nologin = true;  
-                   }
-               }
-          }	
-       }
+    if($_GET['status'] !== $status && $_GET['email'] !== $user_email){
+        redirect('index.php');
+    }
+    
+    if($_GET['status'] == $status && $_GET['email'] == $user_email){
+        $active = 'Active';
+         if($stmt = mysqli_prepare($connection, "UPDATE users SET status='$active' WHERE user_email = ?")){
+
+            mysqli_stmt_bind_param($stmt, "s", $_GET['email']);
+            mysqli_stmt_execute($stmt);
+
+            if(mysqli_stmt_affected_rows($stmt) >= 1){
+                $activeUser = true;
+            }
+            mysqli_stmt_close($stmt);
+        }
+    }
 ?>
 
 <!-- Navigation -->
@@ -68,10 +53,9 @@
 							<h2 class="text-center">Login</h2>
 							<div class="panel-body">
                                 
-								<form id="login-form" role="form" autocomplete="off" class="form" method="post"> 
-								<p style="color: red;"><?php echo isset($error['active']) ? $error['active'] : '' ?></p>
-								<?php if(isset($nologin)):?>
-                                    <p> Wrong Credentials!! Forgot password <a href="forgot.php?forgot=<?php echo uniqid(true); ?>"> Click here</a> </p>
+								<form action="login.php" id="login-form" role="form" autocomplete="off" class="form" method="post"> 
+								<?php if(isset($activeUser)):?>
+                                    <h4 style="text-align:center;color:green;"> Account activated. Please login using your credentials.</h4>
                                 <?php endIf; ?> 
 									<div class="form-group">
 										<div class="input-group">
@@ -113,3 +97,8 @@
 	<?php include "includes/footer.php";?>
 
 </div> <!-- /.container -->
+
+
+
+
+

@@ -438,4 +438,24 @@ function login_user($user_name, $user_password){
   return false;   
 }
 
+function check_active($user_name){
+    
+    global $connection;
+    
+     if($stmt = mysqli_prepare($connection, 'SELECT status FROM users WHERE user_name=?')){
+        mysqli_stmt_bind_param($stmt, "s", $user_name);
+        mysqli_stmt_execute($stmt);
+        mysqli_stmt_bind_result($stmt, $status);
+        mysqli_stmt_fetch($stmt);
+        mysqli_stmt_close($stmt);
+     }
+    if($status == 'Active'){
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+}
+        
 ?>

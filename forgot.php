@@ -46,7 +46,7 @@ if(ifItIsMethod('post')){
             
             $mail->setFrom('srnagire@gmail.com', 'Surya');
             $mail->addAddress($user_email);
-            $mail->Subject = 'Test email';
+            $mail->Subject = 'Reset password link';
             $mail->Body = '<p>Please use the link to reset the password
 <a href="http://localhost/cms/reset.php?email='.$user_email.'&token='.$token.' ">http://localhost/cms/reset.php?email='.$user_email.'&token='.$token.'</a>
 </p>';

@@ -166,6 +166,7 @@ if(isset($_POST['checkBoxArray'])){
 <?php  
 if(isset($_POST['delete_item']))
 {
+    if(check_admin()){
     $delete_post_id = $_POST['delete_item'];
     
     $query = "DELETE FROM posts WHERE post_id ={$delete_post_id}";
@@ -177,6 +178,11 @@ if(isset($_POST['delete_item']))
     query_error($delete_post_comments_query);
     
     header ( "Location: posts.php" );
+    }
+    else
+    {
+      header ( "Location: posts.php" );  
+    }
 }
     
 if(isset($_GET['reset']))
