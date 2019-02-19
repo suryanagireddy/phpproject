@@ -1,4 +1,4 @@
-<nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+<nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
     <div class="container">
         <!-- Brand and toggle get grouped for better mobile display -->
         <div class="navbar-header">
@@ -51,44 +51,19 @@
                                 
                         }
                     }
-                
                 echo "<li class='$category_class'><a href ='category.php?category= {$category_id}'>{$category_title}</a></li>";      
                 }
-                
-                if (session_status() === PHP_SESSION_NONE) session_start();
-                if(isset($_SESSION['user_name'])){
+                ?>
+
+               <?php
+                 if (session_status() === PHP_SESSION_NONE) session_start();
+                 if(isset($_SESSION['user_name'])){
                     if(isset($_GET['p_id'])){
                         $the_post_id = $_GET['p_id'];
                         echo "<li><a href='admin/posts.php?source=edit_post&p_id={$the_post_id}'>Edit post</a></li>";
-                     } 
-                }
-                
-                ?>
-
-                <li class = '<?php echo $contact_class ?>'>
-                    <a style="color: blue;" href="contact.php">Contact us</a>
-                </li>
-                    
-                    
-            </ul>
-            
-        <ul class="nav navbar-nav navbar-right">
-        
-              <?php
-                 if (session_status() === PHP_SESSION_NONE) session_start();
-                 if(isset($_SESSION['user_name'])){
-                    $user_name = $_SESSION['user_name'];
-                    $query = "SELECT user_role FROM users WHERE user_name = '$user_name'";
-                    $user_query = mysqli_query($connection, $query);
-
-                    $row = mysqli_fetch_array($user_query);
-
-                    if($row['user_role'] == 'Admin'){
-                        echo "<li><a href='admin'>Admin Dashboard</a></li>";
-                    } else{
-                        echo "<li><a href='admin'>Dashboard</a></li>";
-                    }
-                    
+                     }
+                     echo "<li><a href='admin'>Admin</a></li>";
+                     
                      echo "<li><a href='includes/logout.php'>Logout</a></li>";
                 
                 } else {
@@ -100,12 +75,14 @@
                 }
                 
                ?>
-    
-      </ul>
+                <li class = '<?php echo $contact_class ?>'>
+                    <a href="contact.php">Contact us</a>
+                </li>
+                    
+                    
+            </ul>
         </div>
         <!-- /.navbar-collapse -->
-        
-        
     </div>
     <!-- /.container -->
 </nav>
