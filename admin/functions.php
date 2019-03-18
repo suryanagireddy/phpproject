@@ -230,8 +230,8 @@ function find_all_categories(){
         echo "<tr>";
         echo "<td>{$cat_id}</td>"; 
         echo "<td>{$cat_title}</td>";
-        echo "<td><a href='categories.php?edit={$cat_id}'>Edit</a></td>";
-        echo "<td><a href='categories.php?delete={$cat_id}'>Delete</a></td>";
+        echo "<td><a class='btn-xs btn-info' href='categories.php?edit={$cat_id}'>Edit</a></td>";
+        echo "<td><a class='btn-xs btn-danger' onClick=\"javascript: return confirm('Are you sure you want to delete?');0 \" href='categories.php?delete={$cat_id}'>Delete</a></td>";
         echo "</tr>";
        }
 }
@@ -274,8 +274,8 @@ function find_all_user_roles(){
         echo "<tr>";
         echo "<td>{$role_id}</td>"; 
         echo "<td>{$role_title}</td>";
-        echo "<td><a href='user_roles.php?edit={$role_id}'>Edit</a></td>";
-        echo "<td><a href='user_roles.php?delete={$role_id}'>Delete</a></td>";
+        echo "<td><a class='btn-xs btn-info' href='user_roles.php?edit={$role_id}'>Edit</a></td>";
+        echo "<td><a class='btn-xs btn-danger' onClick=\"javascript: return confirm('Are you sure you want to delete?');0 \"href='user_roles.php?delete={$role_id}'>Delete</a></td>";
         echo "</tr>";
        }
 }

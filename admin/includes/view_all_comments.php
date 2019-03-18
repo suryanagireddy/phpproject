@@ -1,3 +1,7 @@
+<?php
+include("delete_modal.php");
+?>
+
 <table class= "table table-bordered table-hover">
 <thead>
     <tr>
@@ -8,8 +12,7 @@
         <th>Date</th>
         <th>Status</th>
         <th>In response to</th>
-        <th>Approve</th>
-        <th>Unapprove</th>
+        <th>Change status</th>
         <th>Delete</th>
     </tr>
 </thead>
@@ -46,22 +49,34 @@
            $comment_post_id = $row['post_id'];
            $comment_post_title = $row['post_title'];
            
-           echo "<td><a href='../post.php?p_id=$comment_post_id'>{$comment_post_title}</td>";
+           echo "<td><a class='btn-xs btn-primary' href='../post.php?p_id=$comment_post_id'>{$comment_post_title}</td>";
            } 
         
-
+            if($comment_status == 'Approved'){
+                echo "<td><a class='btn-xs btn-warning' href='comments.php?unapprove={$comment_id}'>Unapprove</a></td>";
+            }
+            else{
+               echo "<td><a class='btn-xs btn-success' href='comments.php?approve={$comment_id}'>Approve</a></td>";
+            }
         
-        echo "<td><a href='comments.php?approve={$comment_id}'>Approve</a></td>";
-        echo "<td><a href='comments.php?unapprove={$comment_id}'>Unapprove</a></td>";
-        echo "<td><a href='comments.php?delete={$comment_id}'>Delete</a></td>";
-        echo "</tr>";
+       ?>
+       
+           <form method="post">
+               <input type="hidden" name="comment_id" value="<?php echo $comment_id ?>">
+
+               <td><input rel='<?php echo $comment_id ?>' class ="btn-xs btn-danger del_link" type ="submit" name = "delete" value = "Delete"></td>
+           </form>
+       
+       <?php   
+        echo "</tr>";     
    }
 ?>
 </tbody>
 </table>
 
 
-<?php 
+<?php
+//Unapprove comment
 if(isset($_GET['unapprove']))
 {
     $unapprove_comment_id = $_GET['unapprove'];
@@ -73,6 +88,7 @@ if(isset($_GET['unapprove']))
     header ( "Location: comments.php" );
 }
 
+//Approve comment
 if(isset($_GET['approve']))
 {
     $approve_comment_id = $_GET['approve'];
@@ -84,25 +100,34 @@ if(isset($_GET['approve']))
     header ( "Location: comments.php" );
 }
 
-
-
-if(isset($_GET['delete']))
+//Delete comment
+if(isset($_POST['delete_item']))
 {
-    $delete_comment_id = $_GET['delete'];
+    if(check_admin()){
+    $delete_comment_id = $_POST['delete_item'];
     $query = "DELETE FROM comments WHERE comment_id ={$delete_comment_id}";
     
     $delete_comment_query = mysqli_query($connection, $query);
     
     query_error($delete_comment_query);
     header ( "Location: comments.php" );
-    
-    
-    //update comment count
-//    $query = "UPDATE posts SET post_comment_count = post_comment_count - 1 ";
-//    $query .= "WHERE post_id = $comment_post_id ";
-//
-//    $update_comment_count =  mysqli_query($connection, $query);
+    }
+    else
+    {
+      header ( "Location: comments.php" );  
+    }
 }
-
-
 ?>
+
+
+<script>
+$(document).ready(function(){ 
+        $(".del_link").on('click', function(e){
+            e.preventDefault();
+            var c_id = $(this).attr("rel");
+            $(".delete-modal-link").val(c_id);  
+            $(".modal-body").html("<h4>Are you sure you want to delete this comment " + c_id + "? </h4>" );
+            $("#myModal").modal('show');
+        });
+    });
+</script>

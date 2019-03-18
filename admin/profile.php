@@ -24,7 +24,7 @@
             $user_name  =  $_POST['user_name'];
             $user_firstname  =  $_POST['user_firstname'];
             $user_lastname =  $_POST['user_lastname'];
-            $user_email =  $_POST['user_email'];
+            //$user_email =  $_POST['user_email'];
             //$user_role = $_POST['user_role'];
 
             $user_image = $_FILES['user_image']['name'];
@@ -44,7 +44,7 @@
         //$query .="user_password = '{$hashed_password}',";
         $query .="user_firstname = '{$user_firstname}',";
         $query .="user_lastname = '{$user_lastname}',";
-        $query .="user_email = '{$user_email}',";
+        //$query .="user_email = '{$user_email}',";
         $query .="user_image = '{$user_image}',";
         //$query .="user_role = '{$user_role}',";
         $query .="user_date = now() ";
@@ -107,10 +107,15 @@ else {
                         <input value="<?php echo $user_name ?>" type="text" class="form-control" name="user_name">
                     </div>
                     
+<!--
                     <div class="form-group">
                         <label for="user-email">Email</label>
-                        <input value="<?php echo $user_email ?>" type="email" class="form-control" name="user_email">
+                        <input value="<?#php echo $user_email ?>" type="email" class="form-control" name="user_email">
                     </div>
+-->
+                    
+                    <div class="form-group">
+                    <label for="user-email">Email: <?php echo $user_email ?></label><br>
 
                     <div class="form-group">
                         <input type="submit" class="btn btn-primary" name = "update_profile" value = "Update Profile">
